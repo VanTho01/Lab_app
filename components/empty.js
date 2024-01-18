@@ -1,9 +1,9 @@
-import React from 'react'
+import React from 'react';
 import {
     View,
     Text,
     StyleSheet
-} from 'react-native'
+} from 'react-native';
 function Empty(props) { 
     return(
         <View>
@@ -16,6 +16,6 @@ const styles = StyleSheet.create({
         
     }
 
-})
+});
 
 export default Empty

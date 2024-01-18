@@ -32,5 +32,5 @@ const styles = StyleSheet.create({
         marginTop: 3,
         borderColor: '#eceff1'
     }
-})
+});
 export default Subtitle;

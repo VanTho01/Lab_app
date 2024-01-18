@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
     View,
     Text,
@@ -12,23 +12,68 @@ import BluetoothSerial from "react-native-bluetooth-serial-next";
 import Device from "../components/device";
 
 function BluetoothList(props) {
-    const list = [
-        {name: 'nguyen van tho', key: '1'},
-        {name: 'nguyen van tam', key: '2'}
-    ];
-    const renderEmpty = () => <Empty text = "no device"/>
+    const [List, setList] = useState([])
+    const [deviceEnable, setdeviceEnable] = useState (false)
+    const renderEmpty = () => <Empty text = "no device"/>;
     const renderItem = ({item}) => {
-        return <Device iconLeft ={require({.../icons/icon_laptop.png})}
-                       iconnRight = {require({.../icons/icon_setting.png})}/>
-    }
+        return <Device {...item} iconLeft ={require('../../icons/icon_laptop.png')}
+                       iconRight = {require('../../icons/icon_setting.png')}/>
+    };
+
+    useEffect(()=>{
+        async function init(){
+            const enable = await BluetoothSerial.requestEnable(); 
+            const List = await BluetoothSerial.list();
+            setList(List);
+            setdeviceEnable(enable);
+            console.log(List);
+        }
+        init();
+
+        return() => {
+            async function remove() {
+                console.log('Terminal scanner');
+                BluetoothSerial.stopScanning();
+            }
+            remove();
+        }      
+    }, [])
+
+    const enableBluetooth = async () => { 
+        try {
+            await BluetoothSerial.requestEnable();
+            const List = await BluetoothSerial.list(); 
+            await BluetoothSerial.stopScanning();
+            setdeviceEnable(true); 
+            setList (List); 
+        } catch (error) { 
+            console.log(error); 
+        }
+    };
+    const disableBluetooth = async () => {
+        try {
+            await BluetoothSerial.disable();
+            await BluetoothSerial.stopScanning();
+            setdeviceEnable(false); 
+            setList([]);
+            } catch (error) { 
+                console.log(error);
+        }
+    };
+    const toggleBluetooth = value => {
+        if (value) {
+            return enableBluetooth();
+        }
+        disableBluetooth();
+    };
     return(
         <Layout title = 'Bluetooth'>
-            <Toggle/>
+            <Toggle value = {deviceEnable} onValueChange = {toggleBluetooth}/>
             <Subtitle title = 'List of device'/>
             <FlatList
-                data={list}
+                data={List}
                 ListEmptyComponent={renderEmpty}
-                renderItem={({item}) => <Text style = {{fontSize: 20}}>{item.name}</Text>}
+                renderItem={renderItem}
             />
         </Layout>
     )

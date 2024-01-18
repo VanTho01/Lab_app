@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "AwesomeProject",
+			"path": "../../.."
+		},
+		{
+			"name": "android",
+			"path": "../../../../Desktop/react-native-bluetooth-serial-master/BluetoothSerialExample/android"
+		}
+	],
+	"settings": {}
+}
